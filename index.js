@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const fs = require('fs/promises');
 const request = require('request-promise');
 
 const bills = {
@@ -85,7 +86,21 @@ const main = () => {
       });
     }));
   }))
-    .then((b) => console.log(b));
+    .then((billData) => {
+      return Promise.resolve(billData.flat().map((bill) => {
+        return [
+          bill.year, bill.school,
+          bill.house_y, bill.house_n, bill.house_e, bill.house_nv,
+          bill.senate_y, bill.senate_n, bill.senate_nv
+        ].join(',');
+      }));
+    })
+    .then((serializedBillData) => {
+      let str = `year,school,house_y,house_n,house_e,house_nv,senate_y,senate_n,senate_nv\n`;
+      str += serializedBillData.join("\n");
+
+      return fs.writeFile('bills.csv', str);
+    });
 };
 
 main();
