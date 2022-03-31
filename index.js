@@ -2,44 +2,32 @@ const cheerio = require('cheerio');
 const fs = require('fs/promises');
 const request = require('request-promise');
 
-const bills = {
-  '2021': [
-    { bill_body: 'S', bill_nbr: 265, sess_yr: 2021, school: 'PSU' },
-    { bill_body: 'S', bill_nbr: 266, sess_yr: 2021, school: 'PITT' },
-    { bill_body: 'S', bill_nbr: 267, sess_yr: 2021, school: 'TEMPLE' },
-    { bill_body: 'S', bill_nbr: 268, sess_yr: 2021, school: 'LINCOLN' }
-  ],
-  '2020': [
-    { bill_body: 'H', bill_nbr: 2441, sess_yr: 2019, school: 'PSU' },
-    { bill_body: 'H', bill_nbr: 2442, sess_yr: 2019, school: 'PITT' },
-    { bill_body: 'H', bill_nbr: 2443, sess_yr: 2019, school: 'TEMPLE' },
-    { bill_body: 'H', bill_nbr: 2444, sess_yr: 2019, school: 'LINCOLN' }
-  ],
-  '2019': [
-    { bill_body: 'H', bill_nbr: 1350, sess_yr: 2019, school: 'PSU' },
-    { bill_body: 'H', bill_nbr: 1351, sess_yr: 2019, school: 'PITT' },
-    { bill_body: 'H', bill_nbr: 1352, sess_yr: 2019, school: 'TEMPLE' },
-    { bill_body: 'H', bill_nbr: 1353, sess_yr: 2019, school: 'LINCOLN' }
-  ],
-  '2018': [
-    { bill_body: 'H', bill_nbr: 2242, sess_yr: 2017, school: 'PSU' },
-    { bill_body: 'H', bill_nbr: 2243, sess_yr: 2017, school: 'PITT' },
-    { bill_body: 'H', bill_nbr: 2244, sess_yr: 2017, school: 'TEMPLE' },
-    { bill_body: 'H', bill_nbr: 2245, sess_yr: 2017, school: 'LINCOLN' }
-  ],
-  '2017': [
-    { bill_body: 'S', bill_nbr: 326, sess_yr: 2017, school: 'PSU' },
-    { bill_body: 'S', bill_nbr: 327, sess_yr: 2017, school: 'PITT' },
-    { bill_body: 'S', bill_nbr: 328, sess_yr: 2017, school: 'TEMPLE' },
-    { bill_body: 'S', bill_nbr: 329, sess_yr: 2017, school: 'LINCOLN' }
-  ],
-  '2016': [
-    { bill_body: 'S', bill_nbr: 912, sess_yr: 2015, school: 'PSU' },
-    { bill_body: 'S', bill_nbr: 915, sess_yr: 2015, school: 'PITT' },
-    { bill_body: 'S', bill_nbr: 914, sess_yr: 2015, school: 'TEMPLE' },
-    { bill_body: 'S', bill_nbr: 916, sess_yr: 2015, school: 'LINCOLN' }
-  ]
-};
+const bills = [
+  { year: 2021, bill_body: 'S', bill_nbr: 265, sess_yr: 2021, school: 'PSU' },
+  { year: 2021, bill_body: 'S', bill_nbr: 266, sess_yr: 2021, school: 'PITT' },
+  { year: 2021, bill_body: 'S', bill_nbr: 267, sess_yr: 2021, school: 'TEMPLE' },
+  { year: 2021, bill_body: 'S', bill_nbr: 268, sess_yr: 2021, school: 'LINCOLN' },
+  { year: 2020, bill_body: 'H', bill_nbr: 2441, sess_yr: 2019, school: 'PSU' },
+  { year: 2020, bill_body: 'H', bill_nbr: 2442, sess_yr: 2019, school: 'PITT' },
+  { year: 2020, bill_body: 'H', bill_nbr: 2443, sess_yr: 2019, school: 'TEMPLE' },
+  { year: 2020, bill_body: 'H', bill_nbr: 2444, sess_yr: 2019, school: 'LINCOLN' },
+  { year: 2019, bill_body: 'H', bill_nbr: 1350, sess_yr: 2019, school: 'PSU' },
+  { year: 2019, bill_body: 'H', bill_nbr: 1351, sess_yr: 2019, school: 'PITT' },
+  { year: 2019, bill_body: 'H', bill_nbr: 1352, sess_yr: 2019, school: 'TEMPLE' },
+  { year: 2019, bill_body: 'H', bill_nbr: 1353, sess_yr: 2019, school: 'LINCOLN' },
+  { year: 2018, bill_body: 'H', bill_nbr: 2242, sess_yr: 2017, school: 'PSU' },
+  { year: 2018, bill_body: 'H', bill_nbr: 2243, sess_yr: 2017, school: 'PITT' },
+  { year: 2018, bill_body: 'H', bill_nbr: 2244, sess_yr: 2017, school: 'TEMPLE' },
+  { year: 2018, bill_body: 'H', bill_nbr: 2245, sess_yr: 2017, school: 'LINCOLN' },
+  { year: 2017, bill_body: 'S', bill_nbr: 326, sess_yr: 2017, school: 'PSU' },
+  { year: 2017, bill_body: 'S', bill_nbr: 327, sess_yr: 2017, school: 'PITT' },
+  { year: 2017, bill_body: 'S', bill_nbr: 328, sess_yr: 2017, school: 'TEMPLE' },
+  { year: 2017, bill_body: 'S', bill_nbr: 329, sess_yr: 2017, school: 'LINCOLN' },
+  { year: 2016, bill_body: 'S', bill_nbr: 912, sess_yr: 2015, school: 'PSU' },
+  { year: 2016, bill_body: 'S', bill_nbr: 915, sess_yr: 2015, school: 'PITT' },
+  { year: 2016, bill_body: 'S', bill_nbr: 914, sess_yr: 2015, school: 'TEMPLE' },
+  { year: 2016, bill_body: 'S', bill_nbr: 916, sess_yr: 2015, school: 'LINCOLN' }
+];
 
 const chamberVotesUri = 'https://www.legis.state.pa.us/CFDOCS/Legis/RC/Public/rc_view_byBill.cfm';
 
@@ -76,18 +64,18 @@ const getChamberVote = (bill,  chamber) => {
 };
 
 const main = () => {
-  Promise.all(Object.keys(bills).map((billYear) => {
-    return Promise.all(bills[billYear].map((bill) => {
-      return Promise.all([
-        getChamberVote(bill, 'H'),
-        getChamberVote(bill, 'S')
-      ]).then(([ houseVote, senateVote ]) => {
-        return Promise.resolve(Object.assign(bill, houseVote, senateVote, { year: billYear }));
-      });
-    }));
+  Promise.all(bills.map((bill) => {
+    return Promise.all([
+      getChamberVote(bill, 'H'),
+      getChamberVote(bill, 'S')
+    ]).then(([ houseVote, senateVote ]) => {
+      return Promise.resolve(Object.assign(bill, houseVote, senateVote));
+    });
   }))
     .then((billData) => {
-      return Promise.resolve(billData.flat().map((bill) => {
+      return Promise.resolve(
+        billData.sort((a, b) => a.year - b.year)
+        .map((bill) => {
         return [
           bill.year, bill.school,
           bill.house_y, bill.house_n, bill.house_e, bill.house_nv,
