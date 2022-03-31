@@ -57,18 +57,18 @@ const getChamberVote = (bill,  chamber) => {
         const voteRows = $("div#RCVotesSum div[style='float:right;']");
 
         if (chamber == "H") {
-          const y = voteRows[0].children[0].data;
-          const n =voteRows[1].children[0].data;
-          const e = voteRows[2].children[0].data;
-          const nv = voteRows[3].children[0].data;
-
-          return Promise.resolve({ chamber, y, n, e, nv });
+          return Promise.resolve({
+            house_y: voteRows[0].children[0].data,
+            house_n: voteRows[1].children[0].data,
+            house_e: voteRows[2].children[0].data,
+            house_nv: voteRows[3].children[0].data
+          });
         } else {
-          const y = voteRows[0].children[0].data;
-          const n =voteRows[1].children[0].data;
-          const nv = voteRows[2].children[0].data;
-
-          return Promise.resolve({ chamber, y, n, nv });
+          return Promise.resolve({
+            senate_y: voteRows[0].children[0].data,
+            senate_n: voteRows[1].children[0].data,
+            senate_nv: voteRows[2].children[0].data
+          });
         }
       });
     });
@@ -80,8 +80,8 @@ const main = () => {
       return Promise.all([
         getChamberVote(bill, 'H'),
         getChamberVote(bill, 'S')
-      ]).then((votes) => {
-        return Promise.resolve(Object.assign(bill, { votes, year: billYear }));
+      ]).then(([ houseVote, senateVote ]) => {
+        return Promise.resolve(Object.assign(bill, houseVote, senateVote, { year: billYear }));
       });
     }));
   }))
