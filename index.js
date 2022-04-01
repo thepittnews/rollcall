@@ -55,7 +55,15 @@ const getChamberVote = (bill,  chamber) => {
     .then((body) => {
       const $ = cheerio.load(body);
 
-      return request(`https://www.legis.state.pa.us/CFDOCS/Legis/RC/Public/${$('a#RCLink_0')[0].attribs.href}`)
+      let voteUrl;
+      const latestVoteTitle = $('a#RCLink_0')[0].children[0].data.toLowerCase();
+      if (latestVoteTitle.includes('mot ')) {
+        voteUrl = $('a#RCLink_1')[0].attribs.href;
+      } else {
+        voteUrl = $('a#RCLink_0')[0].attribs.href;
+      }
+
+      return request(`https://www.legis.state.pa.us/CFDOCS/Legis/RC/Public/${voteUrl}`)
       .then((body) => {
         const $ = cheerio.load(body);
 
