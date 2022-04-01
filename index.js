@@ -64,6 +64,8 @@ const getChamberVote = (bill,  chamber) => {
 };
 
 const main = () => {
+  const keysToRemove = ['bill_body', 'bill_nbr', 'school', 'sess_yr', 'year'];
+
   Promise.all(bills.map((bill) => {
     return Promise.all([
       getChamberVote(bill, 'H'),
@@ -74,18 +76,30 @@ const main = () => {
   }))
     .then((billData) => {
       return Promise.resolve(
-        billData.sort((a, b) => a.year - b.year)
-        .map((bill) => {
-        return [
-          bill.year, bill.school,
-          bill.house_y, bill.house_n, bill.house_e, bill.house_nv,
-          bill.senate_y, bill.senate_n, bill.senate_nv
-        ].join(',');
+        Array.from(new Set(billData.map((b) => b.year).sort((a, b) => a - b)))
+        .map((billYear) => {
+          const serializedBillYear = billData.filter((b) => b.year == billYear)
+            .map((b) => {
+              return Object.fromEntries(
+                Object.keys(b).map((key) => [`${key}_${b.school}`, b[key]])
+              );
+            })
+            .reduce((acc, x) => {
+              for (var key in x) acc[key] = x[key];
+              return acc;
+            }, {});
+
+          for (var key in serializedBillYear) {
+            if (keysToRemove.some((kr) => key.startsWith(kr))) delete serializedBillYear[key];
+          }
+
+          return { ...{year: billYear}, ...serializedBillYear};
       }));
     })
     .then((serializedBillData) => {
-      let str = `year,school,house_y,house_n,house_e,house_nv,senate_y,senate_n,senate_nv\n`;
-      str += serializedBillData.join("\n");
+      let str = Object.keys(serializedBillData[0]).join(',');
+      str += "\n";
+      str += serializedBillData.map((bd) => Object.values(bd).join(',')).join("\n");
 
       return fs.writeFile('bills.csv', str);
     });
