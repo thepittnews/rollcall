@@ -135,7 +135,15 @@ const main = () => {
       str += "\n";
       str += serializedBillData.map((bd) => Object.values(bd).join(',')).join("\n");
 
-      return fs.writeFile('bills.csv', str);
+      let str2 = `year,Penn State,Pitt,Temple,Lincoln\n`;
+      str2 += serializedBillData.map((bd) => {
+        return [bd.year, bd.house_margin_PSU, bd.house_margin_PITT, bd.house_margin_TEMPLE, bd.house_margin_LINCOLN].join(',');
+      }).join("\n");
+
+      return Promise.all([
+        fs.writeFile('bills.csv', str),
+        fs.writeFile('bills-margin-h.csv', str2)
+      ]);
     });
 };
 
