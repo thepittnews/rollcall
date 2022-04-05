@@ -1,4 +1,8 @@
 year,house_y_PSU,house_n_PSU,house_e_PSU,house_nv_PSU,house_margin_PSU,senate_y_PSU,senate_n_PSU,senate_nv_PSU,senate_margin_PSU,house_y_PITT,house_n_PITT,house_e_PITT,house_nv_PITT,house_margin_PITT,senate_y_PITT,senate_n_PITT,senate_nv_PITT,senate_margin_PITT,house_y_TEMPLE,house_n_TEMPLE,house_e_TEMPLE,house_nv_TEMPLE,house_margin_TEMPLE,senate_y_TEMPLE,senate_n_TEMPLE,senate_nv_TEMPLE,senate_margin_TEMPLE,house_y_LINCOLN,house_n_LINCOLN,house_e_LINCOLN,house_nv_LINCOLN,house_margin_LINCOLN,senate_y_LINCOLN,senate_n_LINCOLN,senate_nv_LINCOLN,senate_margin_LINCOLN
+2007,201,2,0,0,65,46,2,2,14,200,3,0,0,64,46,2,2,14,200,3,0,0,64,48,2,0,14,201,2,0,0,65,48,2,0,14
+2008,200,2,1,0,65,49,1,0,15,197,5,1,0,62,49,1,0,15,194,8,1,0,59,47,3,0,13,192,10,1,0,57,49,1,0,15
+2009,184,6,12,0,57,49,0,0,16,181,9,12,0,54,49,0,0,16,179,11,12,0,52,49,0,0,16,181,9,12,0,54,49,0,0,16
+2010,192,4,4,0,61,50,0,0,16,189,7,4,0,58,50,0,0,16,186,10,4,0,55,50,0,0,16,189,7,4,0,58,50,0,0,16
 2011,178,20,5,0,46,49,0,1,16,179,19,5,0,47,49,0,1,16,178,20,5,0,46,49,0,1,16,187,11,5,0,55,49,0,1,16
 2012,177,19,5,0,46,49,0,0,16,184,12,5,0,53,49,0,0,16,186,10,5,0,55,49,0,0,16,186,10,5,0,55,49,0,0,16
 2013,199,4,0,0,63,50,0,0,16,199,4,0,0,63,50,0,0,16,199,4,0,0,63,50,0,0,16,198,4,0,1,63,50,0,0,16
