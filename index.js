@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
-const fs = require('fs/promises');
 const request = require('request-promise');
+const { writeFile } = require('fs/promises');
 
 const bills = [
   { year: 'June 2021', bill_body: 'S', bill_nbr: 265, sess_yr: 2021, school: 'PSU' },
@@ -79,23 +79,17 @@ const bills = [
   { year: 'July 2007', bill_body: 'S', bill_nbr: 932, sess_yr: 2007, school: 'LINCOLN' },
 ];
 
-const chamberVotesUri = 'https://www.legis.state.pa.us/CFDOCS/Legis/RC/Public/rc_view_byBill.cfm';
+const keysToRemove = ['bill_body', 'bill_nbr', 'school', 'sess_yr', 'year'];
 
 const getChamberVote = (bill, chamber) => {
   return request({
-    uri: chamberVotesUri,
-    qs: Object.assign({}, bill, { bill_type: 'B', rc_body: chamber })
+    uri: 'https://www.legis.state.pa.us/CFDOCS/Legis/RC/Public/rc_view_byBill.cfm',
+    qs: { ...bill, ...{ bill_type: 'B', rc_body: chamber } }
   })
     .then((body) => {
       const $ = cheerio.load(body);
-
-      let voteUrl;
       const latestVoteTitle = $('a#RCLink_0')[0].children[0].data.toLowerCase();
-      if (latestVoteTitle.includes('mot ')) {
-        voteUrl = $('a#RCLink_1')[0].attribs.href;
-      } else {
-        voteUrl = $('a#RCLink_0')[0].attribs.href;
-      }
+      const voteUrl = latestVoteTitle.includes('mot ') ? $('a#RCLink_1')[0].attribs.href : $('a#RCLink_0')[0].attribs.href;
 
       return request(`https://www.legis.state.pa.us/CFDOCS/Legis/RC/Public/${voteUrl}`)
       .then((body) => {
@@ -129,13 +123,9 @@ const getChamberVote = (bill, chamber) => {
 };
 
 const main = () => {
-  const keysToRemove = ['bill_body', 'bill_nbr', 'school', 'sess_yr', 'year'];
-
   Promise.all(bills.map((bill) => {
-    return Promise.all([
-      getChamberVote(bill, 'H'),
-      getChamberVote(bill, 'S')
-    ]).then(([ houseVote, senateVote ]) => {
+    return Promise.all([ getChamberVote(bill, 'H'), getChamberVote(bill, 'S') ])
+      .then(([ houseVote, senateVote ]) => {
       return Promise.resolve(Object.assign(bill, houseVote, senateVote));
     });
   }))
@@ -172,8 +162,8 @@ const main = () => {
       }).join("\n");
 
       return Promise.all([
-        fs.writeFile('bills.csv', str),
-        fs.writeFile('bills-margin-h.csv', str2)
+        writeFile('bills.csv', str),
+        writeFile('bills-margin-h.csv', str2)
       ]);
     });
 };
