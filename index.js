@@ -103,28 +103,26 @@ const getChamberVote = (bill, chamber) => {
         const voteRows = $("div#RCVotesSum div[style='float:right;']");
 
         if (chamber === "H") {
-          return Promise.resolve({
+          const voteData = {
             house_y: Number(voteRows[0].children[0].data),
             house_n: Number(voteRows[1].children[0].data),
             house_e: Number(voteRows[2].children[0].data),
             house_nv: Number(voteRows[3].children[0].data)
-          })
-            .then((houseVote) => {
-              const totalVoters = houseVote.house_y + houseVote.house_n;
-              houseVote.house_margin = houseVote.house_y - Math.ceil((2/3) * totalVoters);
-              return Promise.resolve(houseVote);
-            });
+          };
+
+          const totalVoters = voteData.house_y + voteData.house_n;
+          voteData.house_margin = voteData.house_y - Math.ceil((2/3) * totalVoters);
+          return Promise.resolve(voteData);
         } else {
-          return Promise.resolve({
+          const voteData = {
             senate_y: Number(voteRows[0].children[0].data),
             senate_n: Number(voteRows[1].children[0].data),
             senate_nv: Number(voteRows[2].children[0].data)
-          })
-            .then((senateVote) => {
-              const totalVoters = senateVote.senate_y + senateVote.senate_n;
-              senateVote.senate_margin = senateVote.senate_y - Math.ceil((2/3) * totalVoters);
-              return Promise.resolve(senateVote);
-            });
+          };
+
+          const totalVoters = voteData.senate_y + voteData.senate_n;
+          voteData.senate_margin = voteData.senate_y - Math.ceil((2/3) * totalVoters);
+          return Promise.resolve(voteData);
         }
       });
     });
